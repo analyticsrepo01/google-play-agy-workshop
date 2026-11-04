@@ -1,14 +1,14 @@
 # Build Next-Gen Apps with Google Antigravity (`agy`)
 
-A hands-on workshop guide and complete CLI/platform feature reference for going from an empty directory to a **Test-Driven (`RED` → `GREEN`), human-confirmed, mobile-first AI application** in **60 minutes** using **Google Antigravity** and **Gemini 2.5 Flash**.
+A hands-on workshop guide and complete CLI/platform feature reference for going from an empty directory to a **Test-Driven (`RED` → `GREEN`), human-confirmed, mobile-first AI application** in **60 minutes** using **Google Antigravity**, **Gemini 3.8 Flash** (`gemini-3.8-flash`), and **Gemini 4 Argon** (`gemini-4-argon`).
 
 ## Repository Contents
 
 | File | Description |
 | :--- | :--- |
 | [`HANDS_ON_LAB_GUIDE.md`](./HANDS_ON_LAB_GUIDE.md) | **60-Minute Hands-On Lab Guide**: Step-by-step copy-paste prompts covering `/grill-me` scoping, `/plan` blueprinting, Backend Test-Driven Development (`RED` → `GREEN`), live use-case result confirmation, and `/goal` release verification. |
-| [`AGY_FEATURES.md`](./AGY_FEATURES.md) | **Google Antigravity (`agy`) Feature Reference**: Complete overview of CLI commands, slash workflows, headless `stream-json` mode, `AGENTS.md` & `.agents/rules/` triggers, `SKILL.md` skills, subagents, hooks, plugins, MCP, browser automation, Git worktrees, and the Python SDK. |
-| [`.agents/rules/play-standards.md`](./.agents/rules/play-standards.md) | **Starter Workspace Guardrails (`trigger: always_on`)**: Enforces Backend TDD (`RED` → `GREEN`), human-in-the-loop result confirmation, Material 3 mobile UX, structured Gemini JSON outputs, and zero hardcoded API keys. |
+| [`AGY_FEATURES.md`](./AGY_FEATURES.md) | **Google Antigravity (`agy`) Feature Reference**: Complete overview of CLI commands, models (`gemini-3.8-flash` & `gemini-4-argon`), slash workflows, headless `stream-json` mode, `AGENTS.md` & `.agents/rules/` triggers, `SKILL.md` skills, subagents, hooks, plugins, MCP, browser automation, Git worktrees, and the Python SDK. |
+| [`.agents/rules/play-standards.md`](./.agents/rules/play-standards.md) | **Starter Workspace Guardrails (`trigger: always_on`)**: Enforces Backend TDD (`RED` → `GREEN`), human-in-the-loop result confirmation, Material 3 mobile UX, `gemini-3.8-flash` / `gemini-4-argon` structured JSON outputs, and zero hardcoded API keys. |
 
 ## Quick Start
 
@@ -20,7 +20,7 @@ A hands-on workshop guide and complete CLI/platform feature reference for going 
    # Windows (PowerShell)
    irm https://antigravity.google/cli/install.ps1 | iex
    ```
-2. **Grab a Free Gemini API Key** from [Google AI Studio](https://aistudio.google.com/apikey) (`GEMINI_API_KEY`).
+2. **Grab a Free Gemini API Key (\$0 Free Tier)** from [Google AI Studio](https://aistudio.google.com/apikey) (`GEMINI_API_KEY` — includes `gemini-3.8-flash` free of charge with no credit card required; link Cloud credits/Paid Tier if using `gemini-4-argon` via API).
 3. **Open [`HANDS_ON_LAB_GUIDE.md`](./HANDS_ON_LAB_GUIDE.md)** and follow Steps `0` through `5`!
 
 ---
@@ -111,11 +111,12 @@ agy update    # Update agy to the latest release
 2. **Enterprise / Google Cloud Account**
    - Authenticate under Google Cloud terms (`Continue with Google Cloud`) for organization-governed access.
 3. **Direct Gemini API Key Mode (Google AI Studio)**
-   - Ideal for headless environments, workshops, SSH boxes without a local browser, or instant quota failover using a key from [Google AI Studio](https://aistudio.google.com/apikey):
+   - Ideal for headless environments, workshops, SSH boxes without a local browser, or instant quota failover using a self-serve key from [Google AI Studio](https://aistudio.google.com/apikey):
    ```bash
    export GEMINI_API_KEY="<YOUR_API_KEY>"
    agy --settings '{"modelProvider":"gemini"}'
    ```
+   - **Free Tier vs. Paid Tier**: `Gemini 3.8 Flash` (`gemini-3.8-flash`) is included **free of charge** on the Google AI Studio Free Tier (no credit card required), whereas `Gemini 4 Argon` (`gemini-4-argon`) requires a Paid Tier / Google Cloud–billed key (or an eligible Antigravity Pro/Ultra/Enterprise plan via OAuth).
    - To persist API key mode across sessions, add `"modelProvider": "gemini"` to `~/.gemini/antigravity-cli/settings.json` while keeping `GEMINI_API_KEY` set in your environment.
 4. **Session Sign-Out**
    - Run `/logout` inside `agy` to revoke session credentials and clear tokens from the system keyring.
@@ -136,8 +137,14 @@ Antigravity lets you tune how much autonomy the agent exercises:
 
 ### Frontier Model & Reasoning Effort Control
 
-- **Model Selection (`/model` or `--model <name>`)**: Switch between fast low-latency Gemini Flash models and deep-reasoning frontier models mid-session.
-- **Thinking Effort (`/effort` or `--effort <level>`)**: Dynamically set reasoning depth across `low`, `medium`, `high`, `xhigh`, or `max` depending on task complexity.
+- **Model Selection (`/model` or `--model <name>`)**: Switch between fast, low-latency Gemini Flash models and deep-reasoning frontier models mid-session:
+
+| Model | Model ID (`--model` / API) | Context & Reasoning | Access & Pricing Tier |
+| :--- | :--- | :--- | :--- |
+| **Gemini 3.8 Flash** | `gemini-3.8-flash` | 1M context window + tunable `thinking_level` (`low`, `medium`, `high`). Default Antigravity workhorse for rapid TDD loops & structured JSON APIs. | **Included free of charge** on the [Google AI Studio Free Tier](https://aistudio.google.com/apikey) (no credit card required) & all Antigravity plans. |
+| **Gemini 4 Argon** | `gemini-4-argon` | Unified 1M input-output context window + deep frontier reasoning for complex multi-file `/plan` architecture & debugging. | Antigravity Pro/Ultra/Enterprise plans, or Google AI Studio **Paid Tier / Cloud-credit** API keys. |
+
+- **Thinking Effort (`/effort` or `--effort <level>`)**: Dynamically set reasoning depth across `low`, `medium`, `high`, `xhigh`, or `max` depending on task complexity (e.g., `agy --model gemini-4-argon --effort high`).
 
 ### Artifacts & Human-in-the-Loop Review
 

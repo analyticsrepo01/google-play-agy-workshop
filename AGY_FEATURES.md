@@ -84,11 +84,12 @@ agy update    # Update agy to the latest release
 2. **Enterprise / Google Cloud Account**
    - Authenticate under Google Cloud terms (`Continue with Google Cloud`) for organization-governed access.
 3. **Direct Gemini API Key Mode (Google AI Studio)**
-   - Ideal for headless environments, workshops, SSH boxes without a local browser, or instant quota failover using a key from [Google AI Studio](https://aistudio.google.com/apikey):
+   - Ideal for headless environments, workshops, SSH boxes without a local browser, or instant quota failover using a self-serve key from [Google AI Studio](https://aistudio.google.com/apikey):
    ```bash
    export GEMINI_API_KEY="<YOUR_API_KEY>"
    agy --settings '{"modelProvider":"gemini"}'
    ```
+   - **Free Tier vs. Paid Tier**: `Gemini 3.8 Flash` (`gemini-3.8-flash`) is included **free of charge** on the Google AI Studio Free Tier (no credit card required), whereas `Gemini 4 Argon` (`gemini-4-argon`) requires a Paid Tier / Google Cloud–billed key (or an eligible Antigravity Pro/Ultra/Enterprise plan via OAuth).
    - To persist API key mode across sessions, add `"modelProvider": "gemini"` to `~/.gemini/antigravity-cli/settings.json` while keeping `GEMINI_API_KEY` set in your environment.
 4. **Session Sign-Out**
    - Run `/logout` inside `agy` to revoke session credentials and clear tokens from the system keyring.
@@ -109,8 +110,14 @@ Antigravity lets you tune how much autonomy the agent exercises:
 
 ### Frontier Model & Reasoning Effort Control
 
-- **Model Selection (`/model` or `--model <name>`)**: Switch between fast low-latency Gemini Flash models and deep-reasoning frontier models mid-session.
-- **Thinking Effort (`/effort` or `--effort <level>`)**: Dynamically set reasoning depth across `low`, `medium`, `high`, `xhigh`, or `max` depending on task complexity.
+- **Model Selection (`/model` or `--model <name>`)**: Switch between fast, low-latency Gemini Flash models and deep-reasoning frontier models mid-session:
+
+| Model | Model ID (`--model` / API) | Context & Reasoning | Access & Pricing Tier |
+| :--- | :--- | :--- | :--- |
+| **Gemini 3.8 Flash** | `gemini-3.8-flash` | 1M context window + tunable `thinking_level` (`low`, `medium`, `high`). Default Antigravity workhorse for rapid TDD loops & structured JSON APIs. | **Included free of charge** on the [Google AI Studio Free Tier](https://aistudio.google.com/apikey) (no credit card required) & all Antigravity plans. |
+| **Gemini 4 Argon** | `gemini-4-argon` | Unified 1M input-output context window + deep frontier reasoning for complex multi-file `/plan` architecture & debugging. | Antigravity Pro/Ultra/Enterprise plans, or Google AI Studio **Paid Tier / Cloud-credit** API keys. |
+
+- **Thinking Effort (`/effort` or `--effort <level>`)**: Dynamically set reasoning depth across `low`, `medium`, `high`, `xhigh`, or `max` depending on task complexity (e.g., `agy --model gemini-4-argon --effort high`).
 
 ### Artifacts & Human-in-the-Loop Review
 

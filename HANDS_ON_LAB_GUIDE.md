@@ -2,7 +2,7 @@
 
 Bring **your own app idea** (Productivity, Content Creation, Workflow, EdTech, or Utility) and go from an empty folder to a **TDD-verified, human-confirmed, Global Google Play–ready prototype** in **60 minutes (1 hour max)**.
 
-> Looking for a full reference of every `agy` command, flag, rule trigger, skill, hook, and MCP integration? See [`AGY_FEATURES.md`](./AGY_FEATURES.md).
+> Looking for a full reference of every `agy` command, model, flag, rule trigger, skill, hook, and MCP integration? See [`AGY_FEATURES.md`](./AGY_FEATURES.md).
 
 | Section & Clock | Time | What You Do | Output |
 | :--- | :--- | :--- | :--- |
@@ -11,7 +11,7 @@ Bring **your own app idea** (Productivity, Content Creation, Workflow, EdTech, o
 | **02 • Step 2** (`12–16m`) | `4 min` | Add Global Play + Backend TDD + Confirmation rules | `.agents/rules/play-standards.md` |
 | **02 • Step 3** (`16–24m`) | `8 min` | Generate & review a test-first blueprint with `/plan` | Approved TDD plan (`Ctrl+R`) |
 | **03 • Step 4A** (`24–30m`) | `6 min` | **TDD `RED` Phase**: Write backend use-case tests first | Failing `tests/backend.test.js` |
-| **03 • Step 4B** (`30–38m`) | `8 min` | **TDD `GREEN` Phase**: Build backend + Gemini 2.5 Flash + M3 UI | `100% PASS` backend + working UI |
+| **03 • Step 4B** (`30–38m`) | `8 min` | **TDD `GREEN` Phase**: Build backend + Gemini 3.8 Flash + M3 UI | `100% PASS` backend + working UI |
 | **04 • Step 5A** (`38–47m`) | `9 min` | **User Gate**: `agy` runs live use case & asks **YOU** to confirm | Human-approved JSON & UX |
 | **04 • Step 5B** (`47–55m`) | `8 min` | Confirm results → run `/goal` regression & Play Store kit | `PLAY_STORE_LISTING.md` |
 | **05 • Demo** (`55–60m`) | `5 min` | Lightning Show & Tell + wrap-up | Live showcase |
@@ -42,8 +42,10 @@ irm https://antigravity.google/cli/install.ps1 | iex
 agy --version
 ```
 
-### 2. Grab a Free Google AI Studio Key
-Open [aistudio.google.com/apikey](https://aistudio.google.com/apikey), sign in with your Google Account, and click **Create API key**. This powers live `gemini-2.5-flash` structured JSON in your backend API — and doubles as an instant CLI backup key.
+### 2. Grab Your Free Google AI Studio Key (\$0 Free Tier)
+Open [aistudio.google.com/apikey](https://aistudio.google.com/apikey), sign in with your personal Google Account, and click **Create API key** (**\$0 Free Tier** — no credit card or Google Cloud billing setup required):
+- **`Gemini 3.8 Flash` (`gemini-3.8-flash` — Default)**: **100% free of charge** on the Google AI Studio Free Tier (both input and output/thinking tokens). Powers live structured JSON in your backend API and doubles as an instant BYOK CLI failover key!
+- **`Gemini 4 Argon` (`gemini-4-argon` — Frontier Reasoning)**: Switch to `/model gemini-4-argon` inside `agy` for deep architectural planning when signed in with an eligible Pro/Ultra/Enterprise plan or a Paid/Cloud-credit API key *(note: `gemini-4-argon` is Paid Tier only on AI Studio, whereas `gemini-3.8-flash` runs free for everyone)*.
 
 ### 3. Create Your App Folder & Launch `agy`
 
@@ -67,7 +69,7 @@ agy --settings '{"modelProvider":"gemini"}'
 > ```bash
 > agy -c --settings '{"modelProvider":"gemini"}'
 > ```
-> `-c` (`--continue`) resumes your **exact same conversation and files** with zero lost progress. To make AI Studio mode permanent across sessions, add `"modelProvider": "gemini"` to `~/.gemini/antigravity-cli/settings.json`.
+> `-c` (`--continue`) resumes your **exact same conversation and files** on `gemini-3.8-flash` with zero lost progress. To make AI Studio mode permanent across sessions, add `"modelProvider": "gemini"` to `~/.gemini/antigravity-cli/settings.json`.
 
 ---
 
@@ -83,7 +85,7 @@ My app idea is: [DESCRIBE YOUR APP IDEA IN 2-3 SENTENCES].
 Ask me 3 quick scoping questions to lock down:
 1. Core user workflow + 1 primary backend API endpoint (achievable in a 1-hour MVP)
 2. Lightweight stack (zero-setup Node + Mobile Web/PWA, Flutter, or Kotlin Compose)
-3. Exact gemini-2.5-flash structured JSON response fields & input validation rules so we can write backend TDD tests first
+3. Exact gemini-3.8-flash structured JSON response fields & input validation rules so we can write backend TDD tests first
 
 Wait for my answers before writing SPEC.md.
 ```
@@ -99,7 +101,7 @@ Wait for my answers before writing SPEC.md.
 
 ## Step 2: Add Global Play, Backend TDD & Confirmation Guardrails (`12–16m` • 4 mins)
 
-Encode Test-Driven Development and Human-in-the-Loop confirmation into `.agents/rules/` so `agy` never skips backend tests or ships unconfirmed outputs (a starter copy is also included at [`.agents/rules/play-standards.md`](./.agents/rules/play-standards.md)).
+Encode Test-Driven Development and Human-in-the-Loop confirmation into `.agents/rules/` so `agy` never skips backend tests, always targets current frontier models, and never ships unconfirmed outputs (a starter copy is also included at [`.agents/rules/play-standards.md`](./.agents/rules/play-standards.md)).
 
 **Copy & paste into `agy`:**
 ```markdown
@@ -107,7 +109,7 @@ Create .agents/rules/play-standards.md starting with YAML frontmatter `trigger: 
 1. Global Market First (US / Tier-1 Export): English (en-US) primary UI with clean string constants ready for multi-locale expansion, plus 390x844 Material 3 mobile UX (48px+ touch targets & 1-tap sample inputs).
 2. Backend TDD First (Red -> Green): Always write executable backend API & Gemini JSON schema tests (e.g. tests/backend.test.js) BEFORE implementing backend feature logic.
 3. User Result Confirmation: After running backend use-case tests, print the pass/fail table and actual returned JSON output, and explicitly ASK THE USER TO CONFIRM the results before generating Play Store release assets.
-4. Gemini AI & Security: Use gemini-2.5-flash with structured JSON output; never hardcode API keys in source or test files (read GEMINI_API_KEY from env with a deterministic offline demo fallback).
+4. Latest Gemini Models & Security: Use gemini-3.8-flash (or gemini-4-argon when configured with a paid/credit key) with structured JSON output; never hardcode API keys in source or test files (read GEMINI_API_KEY from env with a deterministic offline demo fallback).
 ```
 
 > [!IMPORTANT]
@@ -117,13 +119,13 @@ Create .agents/rules/play-standards.md starting with YAML frontmatter `trigger: 
 
 ## Step 3: Generate a Test-First Blueprint with `/plan` (`16–24m` • 8 mins)
 
-Review your 3-milestone TDD plan before `agy` writes a single line of code.
+Review your 3-milestone TDD plan before `agy` writes a single line of code. *(Optional: if signed in with a Pro/Enterprise plan or Cloud-credit key, run `/model gemini-4-argon` for deep architectural planning, or stay on `gemini-3.8-flash` for fast planning!)*
 
 **Copy & paste into `agy`:**
 ```markdown
 /plan Based on @SPEC.md and our play-standards rule, create a concise 3-milestone TDD implementation plan:
 - Milestone 1 (RED): Backend API & Gemini structured JSON schema test suite (health check, HTTP 400 empty-input validation, HTTP 200 schema contract, and zero hardcoded API keys)
-- Milestone 2 (GREEN): Backend service + live gemini-2.5-flash structured JSON integration (with deterministic offline fallback) + 390x844 Material 3 mobile UI with 1-tap sample inputs
+- Milestone 2 (GREEN): Backend service + live gemini-3.8-flash structured JSON integration (with deterministic offline fallback) + 390x844 Material 3 mobile UI with 1-tap sample inputs
 - Milestone 3 (CONFIRM & SHIP): Run end-to-end backend use-case test, present actual output & ask user to confirm results, then run /goal for Play Store readiness
 Do not write code yet.
 ```
@@ -153,13 +155,13 @@ Bind any test server to an ephemeral port (port 0). Run `node tests/backend.test
 > [!NOTE]
 > Seeing **`FAIL` (`RED`)** here proves your tests genuinely exercise the backend contract rather than passing on empty stubs! Feel free to ask `agy` to add 1 custom edge case for your app idea.
 
-### Step 4B (`GREEN` Phase — 8 mins): Build Backend, Gemini 2.5 Flash & Mobile UI to Pass
+### Step 4B (`GREEN` Phase — 8 mins): Build Backend, Gemini 3.8 Flash & Mobile UI to Pass
 Now instruct `agy` to implement your backend endpoint and `390x844` Material 3 UI until every test turns `GREEN`.
 
 **Copy & paste into `agy`:**
 ```markdown
 TDD Step 2 (GREEN Phase): Execute Milestone 2 now!
-1. Implement the backend API + gemini-2.5-flash structured JSON integration (reading GEMINI_API_KEY from env, with a deterministic offline demo fallback) so ALL tests in tests/backend.test.js pass.
+1. Implement the backend API + gemini-3.8-flash structured JSON integration (reading GEMINI_API_KEY from env, with a deterministic offline demo fallback) so ALL tests in tests/backend.test.js pass.
 2. Build the 390x844 Material 3 mobile UI wired to our backend endpoint, including 2-3 one-tap sample inputs.
 3. Re-run `node tests/backend.test.js` and fix any issues until 100% of backend tests are GREEN!
 ```
@@ -215,6 +217,7 @@ Run `/diff` inside `agy` to inspect every test, backend, UI, and store listing f
 | `/grill-me <idea>` | Interviews you to lock down app + backend API scope in `SPEC.md` |
 | `/plan <prompt>` | Generates a reviewable TDD implementation blueprint before coding |
 | `/goal <objective>` | Loops autonomously through test suites and bug-fixes until green |
+| `/model` | Switches between `gemini-3.8-flash` (fast default) & `gemini-4-argon` (deep reasoning) |
 | `/artifact` or `Ctrl+R` | Opens generated plans and artifacts for review |
 | `/diff` | Shows uncommitted backend, test, and UI diffs in your workspace |
 | `/compact` | Compresses long chat history to free up context tokens |

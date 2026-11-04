@@ -16,6 +16,7 @@ description: Global Google Play Store app quality, Backend TDD, Human Confirmati
 3. **Human-in-the-Loop Use-Case Confirmation**:
    - After turning tests `GREEN`, execute an end-to-end backend use-case test using realistic domain input, display the pass/fail summary table alongside the actual returned structured JSON payload, and **explicitly ask the user to confirm** that the results match their expected use case before generating store listing artifacts.
 
-4. **Mobile-First Material 3 UX & Play Security**:
+4. **Mobile-First Material 3 UX, Latest Gemini Models & Play Security**:
    - Design responsive mobile portrait layouts (`390x844` standard viewport) with touch targets `>= 48px`, high-contrast styling, and 2–3 one-tap realistic sample inputs.
-   - Default to `gemini-2.5-flash` with structured JSON outputs (`responseSchema` / `responseMimeType: "application/json"`). **Never hardcode API keys** in source or test files; read `GEMINI_API_KEY` from the environment or a runtime Settings modal, with a deterministic offline demo fallback.
+   - Default to **`gemini-3.8-flash`** (included free of charge on the Google AI Studio Free Tier) or **`gemini-4-argon`** (when configured with a Paid/Cloud-credit key; do not use legacy pre-3.8 models) with structured JSON outputs (`responseSchema` / `responseMimeType: "application/json"`).
+   - **Never hardcode API keys** in source or test files; read `GEMINI_API_KEY` from the environment or a runtime Settings modal, with a deterministic offline demo fallback.
