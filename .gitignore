@@ -1,0 +1,10 @@
+# Environment & secrets (never commit API keys)
+.env
+.env.*
+
+# Dependencies & OS metadata
+node_modules/
+.DS_Store
+*.log
+*.zip
+agent_engine/
