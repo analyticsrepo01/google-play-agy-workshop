@@ -19,6 +19,7 @@ from pptx import Presentation
 
 ROOT = Path(__file__).parent
 DEMO_REPO = "https://github.com/sajeetharan/name-race-agent-workshop"
+WEBSITE = "https://sajeetharan.dev/"
 NS = {
     "a": "http://schemas.openxmlformats.org/drawingml/2006/main",
     "p": "http://schemas.openxmlformats.org/presentationml/2006/main",
@@ -221,6 +222,25 @@ def resolve_part(source, target):
     return posixpath.normpath(posixpath.join(posixpath.dirname(source), target)).lstrip("/")
 
 
+def add_cover_website(root, entries, name, changed):
+    body = root.xpath('.//p:sp[p:nvSpPr/p:cNvPr/@id="15"]/p:txBody', namespaces=NS)[0]
+    if WEBSITE in body.xpath(".//a:t/text()", namespaces=NS):
+        return
+    rel_name, rels = relationships(entries, name)
+    link_id = f"rId{max(int(rel.get('Id')[3:]) for rel in rels) + 1}"
+    etree.SubElement(rels, "{http://schemas.openxmlformats.org/package/2006/relationships}Relationship",
+                     Id=link_id, Type=NS["r"] + "/hyperlink", Target=WEBSITE, TargetMode="External")
+    changed[rel_name] = serialize(rels)
+    website_body = deepcopy(body)
+    replace_body(website_body, [WEBSITE], size=9, hyperlink=link_id, leading=1.15)
+    paragraph = website_body.find(tag("a:p"))
+    style = paragraph.find(".//" + tag("a:rPr"))
+    style.set("b", "0")
+    style.set("u", "sng")
+    style.find(".//" + tag("a:srgbClr")).set("val", "4285F4")
+    body.append(paragraph)
+
+
 def update(path):
     presentation = Presentation(path)
     if len(presentation.slides) != 21:
@@ -258,7 +278,9 @@ def update(path):
                         relationship.set("Target", DEMO_REPO)
                 changed[rel_name] = serialize(rels)
             replace_body(nodes[0], lines, size, link_id, leading)
-        if replacements:
+        if number == 1:
+            add_cover_website(root, entries, name, changed)
+        if replacements or number == 1:
             changed[name] = serialize(root)
         if number in NOTES:
             _, slide_rels = relationships(entries, name)
@@ -291,6 +313,9 @@ def update(path):
 def verify(path, before):
     deck = Presentation(path)
     assert len(deck.slides) == 21
+    assert any(
+        shape.has_text_frame and WEBSITE in shape.text for shape in deck.slides[0].shapes
+    )
     with zipfile.ZipFile(path) as archive:
         assert set(archive.namelist()) == set(before)
         for name, original in before.items():

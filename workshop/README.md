@@ -50,6 +50,7 @@ the five-question rules, setup on port **18769**, `name-race-builder`, guide/run
 MCP separation, and the bounded optional Gemini commentator. Layouts, the cover
 photo, official tool links, and existing animation timelines are preserved.
 The current source is the standalone repo, not the historical `workshop/demo` folder.
+The cover includes the clickable speaker website: https://sajeetharan.dev/.
 
 ### Current fast start
 
