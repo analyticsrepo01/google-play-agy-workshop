@@ -8,3 +8,9 @@ node_modules/
 *.log
 *.zip
 agent_engine/
+dist/
+.workshop-data/
+.race-data/
+~$*.pptx
+__pycache__/
+*.pyc

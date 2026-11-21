@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "devfest-workshop": {
+      "command": "node",
+      "args": [
+        "C:\\REPLACE_WITH_YOUR_DEMO_FOLDER\\src\\mcp.ts"
+      ],
+      "enabledTools": [
+        "get_workshop_overview",
+        "get_agent_build_checklist"
+      ],
+      "timeoutSeconds": 30
+    }
+  }
+}
