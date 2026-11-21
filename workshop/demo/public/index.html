@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DevFest Quest | Build. Play. Verify.</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#quest">Skip to the current quest</a>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="DevFest Quest home">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="m14 10-9 10 9 10m12-20 9 10-9 10M23 7l-6 26"/></svg>
+      <span>DevFest <strong>Quest</strong></span>
+    </a>
+    <div class="top-actions"><span class="event-label">GDG Kathmandu / Local demo</span><button id="refresh" class="secondary">Refresh state</button></div>
+  </header>
+  <main>
+    <section class="hero" aria-labelledby="hero-title">
+      <div>
+        <p class="eyebrow">BUILD. PLAY. VERIFY.</p>
+        <h1 id="hero-title">Small quests.<br><span>Big agent energy.</span></h1>
+        <p class="intro">Cross the Builder Bridge, unlock the Tool Temple, and claim your badge.
+          The AI hosts the adventure. Your code keeps the score.</p>
+        <div class="rule-chips"><span>3 quests</span><span>100 points per correct answer</span><span>Hint: -25 points</span></div>
+      </div>
+      <svg class="hero-art" viewBox="0 0 320 260" aria-hidden="true">
+        <path d="M20 216h280" stroke="#20344b" stroke-width="3"/>
+        <path d="m38 216 49-94 46 94m92 0 36-75 45 75" fill="#e8ddff" stroke="#20344b" stroke-width="3"/>
+        <path d="M102 215V112h116v103" fill="#fbbf24" stroke="#20344b" stroke-width="3"/>
+        <path d="M89 114V77h23v13h20V77h24v37m16 0V77h23v13h20V77h24v37" fill="#fff" stroke="#20344b" stroke-width="3"/>
+        <path d="M147 215v-51a18 18 0 0 1 36 0v51" fill="#7c3aed" stroke="#20344b" stroke-width="3"/>
+        <path d="M164 77V22m1 0h50l-12 16 12 16h-50" fill="#7c3aed" stroke="#20344b" stroke-width="3"/>
+        <path d="m55 46 4 11 12 1-10 7 3 12-10-7-10 7 3-12-10-7 12-1zm211 47 3 8 9 1-7 5 2 9-7-5-7 5 2-9-7-5 9-1z" fill="#f59e0b" stroke="#20344b" stroke-width="2"/>
+        <rect x="28" y="183" width="72" height="33" rx="10" fill="#fff" stroke="#20344b" stroke-width="3"/>
+        <path d="m50 192-8 8 8 8m25-16 8 8-8 8" fill="none" stroke="#7c3aed" stroke-width="3"/>
+      </svg>
+    </section>
+    <section class="scoreboard" aria-label="Your game progress">
+      <div><span>Quest progress</span><strong id="completed">0 / 3</strong></div>
+      <div><span>Your score</span><strong><span id="score">0</span> <small>pts</small></strong></div>
+      <div><span>Your badge</span><strong id="badge-status">Locked</strong></div>
+    </section>
+    <p id="mode" class="mode">Loading the local game...</p>
+    <p id="request-status" class="request-status" role="status"></p>
+    <div id="error" class="error" role="alert" hidden></div>
+    <ol id="quest-map" class="quest-map" aria-label="Adventure map"></ol>
+    <div class="game-layout">
+      <section id="quest" class="panel quest-panel" aria-labelledby="quest-title">
+        <p id="quest-number" class="eyebrow">YOUR NEXT CHALLENGE</p>
+        <h2 id="quest-title" tabindex="-1">Opening the gate...</h2>
+        <p id="story" class="story"></p>
+        <p id="question" class="question"></p>
+        <form id="answer-form">
+          <fieldset id="choices"><legend>Choose your answer</legend><div id="options"></div></fieldset>
+          <div class="actions">
+            <button id="check" type="submit">Check answer</button>
+            <button id="hint" type="button" class="secondary">Ask for a hint (-25 points)</button>
+          </div>
+        </form>
+        <p id="hint-text" class="hint" hidden></p>
+        <p id="feedback" class="feedback" role="status"></p>
+        <button id="next" class="secondary" hidden>Next quest</button>
+        <div id="completion" class="completion" hidden>
+          <svg viewBox="0 0 120 120" aria-hidden="true">
+            <path d="m34 75-8 38 34-16 34 16-8-38" fill="#e8ddff" stroke="#20344b" stroke-width="3"/>
+            <path d="m60 8 15 9 18 2 7 17 12 14-7 17-2 18-17 7-14 12-17-7-18-2-7-17-12-14 7-17 2-18 17-7z" fill="#fbbf24" stroke="#20344b" stroke-width="3"/>
+            <path d="m37 57 15 15 31-33" fill="none" stroke="#20344b" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div><p id="completion-status" class="eyebrow"></p><h3>DevFest Agent Builder</h3><p class="earned-score"><strong id="completion-score">0</strong> points earned</p></div>
+        </div>
+        <div id="badge-actions" class="badge-actions">
+          <button id="propose" disabled>Request my badge</button>
+          <button id="review" class="secondary" hidden>Review &amp; publish badge</button>
+          <p id="badge-note">Complete all three quests to unlock your badge. A proposal is not publication.</p>
+        </div>
+      </section>
+      <aside class="panel host-panel" aria-labelledby="host-title">
+        <span class="host-tag">GOOGLE ADK / TYPESCRIPT</span>
+        <h2 id="host-title">Meet your game host</h2>
+        <p>The host can read quests, offer hints, check your chosen answer, and propose a badge.
+          It cannot invent points or publish your result.</p>
+        <div id="conversation" class="conversation" role="log" aria-label="Game host conversation"></div>
+        <form id="chat-form">
+          <label for="chat-input">Message the ADK game host</label>
+          <textarea id="chat-input" rows="3" maxlength="800" placeholder="Show me my current quest." disabled></textarea>
+          <button id="send" type="submit" disabled>Send to the game host</button>
+        </form>
+        <p id="chat-help" class="helper">Live model chat requires the presenter to start dev:live with a private API key.</p>
+      </aside>
+    </div>
+    <section class="panel trace-panel" aria-labelledby="trace-title">
+      <div class="trace-heading"><div><p class="eyebrow">EVIDENCE, NOT MAGIC</p><h2 id="trace-title">What actually ran?</h2></div><button id="clear-trace" class="secondary">Clear displayed trace</button></div>
+      <p>Local button actions are deterministic handlers. Only entries marked <strong>ADK runtime</strong>
+        are model-selected tool calls. Human confirmation is a separate path.</p>
+      <div id="trace" class="trace"><p>No calls yet. Play a quest or ask the live host.</p></div>
+    </section>
+    <footer>One-player fictional workshop game. Local publication only; no official certificate, login, multiplayer, or deployment.</footer>
+  </main>
+  <dialog id="badge-dialog" aria-labelledby="dialog-title">
+    <h2 id="dialog-title">You approve. The agent doesn't.</h2>
+    <p>Review the earned score before publishing this badge to your local game.</p>
+    <pre id="proposal-details"></pre>
+    <form id="publish-form">
+      <label for="confirmation">Type PUBLISH to confirm</label>
+      <input id="confirmation" autocomplete="off" required aria-describedby="confirmation-error">
+      <p id="confirmation-error" class="error-text" role="alert"></p>
+      <button id="publish" type="submit">Confirm local publication</button>
+    </form>
+    <form method="dialog"><button class="secondary">Cancel</button></form>
+  </dialog>
+</body>
+</html>

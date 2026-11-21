@@ -1,0 +1,40 @@
+{
+  "name": "devfest-quest-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "One-hour Antigravity + Google ADK TypeScript demo: DevFest Quest",
+  "type": "module",
+  "engines": {
+    "node": ">=24.13.0",
+    "npm": ">=11.8.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "node --test src/store.test.ts src/tools.test.ts src/server.test.ts src/mcp.test.ts",
+    "test:mcp": "node --test src/mcp.test.ts",
+    "test:exercise": "node --test src/exercise.test.ts",
+    "check": "npm run build && npm test",
+    "offline": "node src/offline.ts",
+    "state": "node src/approval.ts list",
+    "approve": "node src/approval.ts approve",
+    "reject": "node src/approval.ts reject",
+    "reset": "node src/approval.ts reset",
+    "preflight": "node src/preflight.ts",
+    "agent": "node src/live.ts",
+    "dev": "node src/server.ts",
+    "dev:live": "node src/server.ts --live"
+  },
+  "dependencies": {
+    "@google/adk": "2.5.0",
+    "@modelcontextprotocol/sdk": "1.32.2",
+    "@opentelemetry/api": "1.9.0",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.6",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "gaxios@7.1.3": "7.3.1"
+  }
+}

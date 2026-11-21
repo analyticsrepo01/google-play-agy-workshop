@@ -4,6 +4,20 @@ A hands-on workshop guide and complete CLI/platform feature reference for going 
 
 ## Repository Contents
 
+**Road to DevFest Nepal 2026:** For the one-hour **Beyond AI-Assisted Coding:
+Understanding and Building AI Agents** session, start with the
+[event workshop pack](./workshop/README.md) and
+[current demo script](./workshop/DEMO_SCRIPT.md).
+The current demo is [Name Race](https://github.com/sajeetharan/name-race-agent-workshop):
+a live TypeScript quiz where up to 120 participants join by QR code, answer five
+workshop questions, and move colored cars toward a named podium.
+It has a reusable Skill, real MCP tools, and an optional
+Gemini commentator. No ADK is required. The flow starts with vibe coding, then covers
+Antigravity/tools, setup, Skills, MCP, and building an agent.
+Both editable decks, their speaker notes, and the PDFs are aligned with Name Race.
+The previous DevFest Quest implementation remains as a historical reference.
+The original 60-minute app workshop remains below.
+
 | File | Description |
 | :--- | :--- |
 | [`HANDS_ON_LAB_GUIDE.md`](./HANDS_ON_LAB_GUIDE.md) | **60-Minute Hands-On Lab Guide**: Step-by-step copy-paste prompts covering `/grill-me` scoping, `/plan` blueprinting, Backend Test-Driven Development (`RED` → `GREEN`), live use-case result confirmation, and `/goal` release verification. |
