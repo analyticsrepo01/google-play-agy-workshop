@@ -22,10 +22,13 @@ revision **fdbbc14** (five-question quiz), as their current demo reference:
 - `BUILD_GUIDE.md`, `DEMO_SCRIPT.md`, `DEPLOY.md`, and `VALIDATION.md`:
   build steps, live narration, private host login and single-owner deployment limits.
 
-Both decks retain their saved shape geometry, cover photo, handbook QR,
+Both decks retain their saved layouts, cover photo,
 official tool links, and animation timelines. Demo-specific notes are rewritten
 to match the current code. `update_demo_slides.py` updates the saved packages;
 `build_slides.py` only produces a separately named historical Quest deck.
+The cover's blue journey title is enlarged to 27 pt. The closing resource link
+and regenerated static QR now target the Name Race repository, with a separate
+link to its numbered build guide.
 
 ### Current slide map
 

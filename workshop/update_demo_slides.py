@@ -1,6 +1,6 @@
 """Align the saved decks with Name Race without regenerating their artwork.
 
-Requires the existing slide-tool dependencies: python-pptx and Pillow.
+Requires the existing slide-tool dependencies: python-pptx, Pillow, and qrcode.
 Run from any directory; export fresh PDFs with PowerPoint afterward.
 """
 
@@ -12,9 +12,11 @@ import os
 import posixpath
 import zipfile
 
+import qrcode
 from lxml import etree
 from PIL import ImageFont
 from pptx import Presentation
+from pptx.util import Pt
 
 
 ROOT = Path(__file__).parent
@@ -94,8 +96,11 @@ TEXT = {
         24: "Bound the model loop.\n\nInspect real MCP results.\n\nKeep human authority.",
     },
     21: {
-        177: "Name Race source and build guide",
-        178: DEMO_REPO,
+        12: "Scan the demo repo",
+        175: "Name Race repository",
+        176: DEMO_REPO,
+        177: "Numbered build guide and prompts",
+        178: DEMO_REPO + "/blob/main/BUILD_GUIDE.md",
         183: "Clone Name Race for the current demo; workshop slides and guides are in the workshop repository.",
     },
 }
@@ -117,7 +122,7 @@ NOTES = {
     18: "Inspect the actual runtime call and result trace. Phone registration calls join_room; answers call submit_answer; views call read_room. Reviewed START, CLOSE, and NEXT reach host_control through the authorized HTTP adapter. These are real MCP calls without a model key, not AI reasoning. Guide MCP is a separate development connection. If optional Gemini is enabled privately, its trace reads Agent to MCP using read_race_summary. The model chooses style, not facts or winners. Errors stay visible; do not invent a successful model call.",
     19: "Scan the room QR code and choose a nickname you consent to display. Up to 120 entries answer five questions about vibe coding, Antigravity, Skills, MCP, and human control. Each answer is final. Review and type START; after answers type CLOSE to reveal; type NEXT to open the next question. Each correct answer earns 100 points and moves the car 20 percent. Wrong or missing answers earn zero. Scores rank first and faster total correct-answer receipt times break ties, including network and polling delay. Exact ties share a rank; the leading three entries appear on the named podium after question five closes. RESET retains names for another round. DELETE removes the room. Rooms expire two hours after creation.",
     20: "We started with a clear idea, chose Antigravity, reviewed setup and permissions, reused a Skill, connected real MCP tools, and built a bounded optional commentator. Skills guide how to work. MCP connects scoped tools. Gemini chooses a commentary style while code owns facts, scores, and ranking. Human host controls remain outside the model. Test, inspect actual results, and verify deployment separately. This is a teaching demo, not an abuse-proof exam or multi-instance production backend.",
-    21: "Use the public Build with AI Handbook for more ideas and prompting examples. The QR code leads to the handbook. Clone the Name Race source repo for the current quiz, numbered build guide, Skill, MCP configuration, optional agent, tests, and deployment instructions. The workshop repository contains these slides and session guides; its bundled Quest demo is a historical reference, not today's quiz. Make one small verified change in your own copy and keep the capability boundaries. Thank you to GDG Kathmandu and everyone joining.",
+    21: "The QR code and first link lead to the Name Race repository. Clone it for the current quiz, Skill, MCP configuration, optional agent, tests, and deployment instructions. The next link opens the numbered build guide and prompts. Antigravity documentation helps with setup. The workshop repository contains these slides and session guides; its bundled Quest demo is a historical reference, not today's quiz. Make one small verified change in your own copy and keep the capability boundaries. Thank you to GDG Kathmandu and everyone joining.",
 }
 
 QUESTIONS = {
@@ -241,6 +246,61 @@ def add_cover_website(root, entries, name, changed):
     body.append(paragraph)
 
 
+def qr_modules(root):
+    shapes = root.xpath(".//p:sp", namespaces=NS)
+    named = [shape for shape in shapes
+             if shape.find(".//" + tag("p:cNvPr")).get("name", "").startswith("Name Race QR module ")]
+    if named:
+        return named
+    return [shape for shape in shapes
+            if 14 <= int(shape.find(".//" + tag("p:cNvPr")).get("id")) <= 174]
+
+
+def update_closing_qr(root):
+    modules = qr_modules(root)
+    if modules[0].find(".//" + tag("p:cNvPr")).get("name", "").startswith("Name Race QR module "):
+        return
+    ids = {shape.find(".//" + tag("p:cNvPr")).get("id") for shape in modules}
+    assert not ids.intersection(root.xpath(".//p:spTgt/@spid", namespaces=NS)), "QR modules must remain static."
+    tree = modules[0].getparent()
+    template = deepcopy(modules[0])
+    index = tree.index(modules[0])
+    next_id = max(int(value) for value in root.xpath(".//p:cNvPr/@id", namespaces=NS)) + 1
+    for module in modules:
+        tree.remove(module)
+    background = root.xpath('.//p:sp[p:nvSpPr/p:cNvPr/@id="13"]/p:spPr/a:xfrm', namespaces=NS)[0]
+    offset, extent = background.find(tag("a:off")), background.find(tag("a:ext"))
+    qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_M, border=4)
+    qr.add_data(DEMO_REPO)
+    qr.make(fit=True)
+    matrix = qr.get_matrix()
+    size = len(matrix)
+    number = 0
+    for row, cells in enumerate(matrix):
+        start = None
+        for column in range(size + 1):
+            filled = column < size and cells[column]
+            if filled and start is None:
+                start = column
+            elif not filled and start is not None:
+                shape = deepcopy(template)
+                identity = shape.find(".//" + tag("p:cNvPr"))
+                identity.set("id", str(next_id + number))
+                identity.set("name", f"Name Race QR module {number + 1}")
+                transform = shape.find(".//" + tag("a:xfrm"))
+                x = round(start * int(extent.get("cx")) / size)
+                y = round(row * int(extent.get("cy")) / size)
+                right = round(column * int(extent.get("cx")) / size)
+                bottom = round((row + 1) * int(extent.get("cy")) / size)
+                transform.find(tag("a:off")).set("x", str(int(offset.get("x")) + x))
+                transform.find(tag("a:off")).set("y", str(int(offset.get("y")) + y))
+                transform.find(tag("a:ext")).set("cx", str(right - x))
+                transform.find(tag("a:ext")).set("cy", str(bottom - y))
+                tree.insert(index + number, shape)
+                number += 1
+                start = None
+
+
 def update(path):
     presentation = Presentation(path)
     if len(presentation.slides) != 21:
@@ -270,16 +330,23 @@ def update(path):
                 raise ValueError(f"Missing text shape {number}/{shape_id}")
             lines, size, leading = fitted_lines(value, shape)
             link_id = None
-            if number == 21 and shape_id == 178:
+            if number == 21 and shape_id in (176, 178):
                 link_id = nodes[0].xpath(".//a:hlinkClick/@r:id", namespaces=NS)[0]
                 rel_name, rels = relationships(entries, name)
+                if rel_name in changed:
+                    rels = etree.fromstring(changed[rel_name])
                 for relationship in rels:
                     if relationship.get("Id") == link_id:
-                        relationship.set("Target", DEMO_REPO)
+                        relationship.set("Target", value)
                 changed[rel_name] = serialize(rels)
             replace_body(nodes[0], lines, size, link_id, leading)
         if number == 1:
             add_cover_website(root, entries, name, changed)
+            title = root.xpath('.//p:sp[p:nvSpPr/p:cNvPr/@id="13"]', namespaces=NS)[0]
+            title.find(".//" + tag("a:ext")).set("cy", str(Pt(33.5)))
+            replace_body(title.find(tag("p:txBody")), ["Idea -> tools -> agent"], size=27, leading=1.1)
+        if number == 21:
+            update_closing_qr(root)
         if replacements or number == 1:
             changed[name] = serialize(root)
         if number in NOTES:
@@ -324,6 +391,12 @@ def verify(path, before):
                 assert current == original, name
             if name.startswith("ppt/slides/slide") and name.endswith(".xml"):
                 left, right = etree.fromstring(original), etree.fromstring(current)
+                if name == "ppt/slides/slide1.xml":
+                    left.xpath('.//p:sp[p:nvSpPr/p:cNvPr/@id="13"]/p:spPr/a:xfrm/a:ext', namespaces=NS)[0].set("cy", str(Pt(33.5)))
+                if left.xpath('.//p:sp[p:nvSpPr/p:cNvPr/@id="175"]', namespaces=NS):
+                    for root in (left, right):
+                        for module in qr_modules(root):
+                            module.getparent().remove(module)
                 for expression in (".//p:cNvPr/@id", ".//a:xfrm", ".//p:timing", ".//p:transition", ".//p:pic"):
                     def values(root):
                         return [etree.tostring(node) if not isinstance(node, str) else node

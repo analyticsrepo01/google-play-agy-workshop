@@ -24,6 +24,14 @@ Reapplying the updater on private copies produced byte-identical decks.
 The preserved Quest reference also passed its own strict build and all
 13 tests before publication; those tests do not validate Name Race.
 
+The cover's blue journey title is now **27 pt**, increased from 20.25 pt;
+its adjusted text box does not overlap the next paragraph. The closing
+handbook resource is replaced by the Name Race repository link and static QR,
+with a separate build-guide link. Both PDFs were refreshed and reopened checks
+found no native text overflow. Rendered QR cell centers match every cell of the
+repository's encoded matrix; PDF repository/build-guide hyperlinks and the
+cover website are verified. Photos and existing animation timelines remain unchanged.
+
 The current rules are five questions, 120 entries, 100 points and 20% car
 progress per correct answer, score/time ranking, named top-three podium, and
 host-controlled START/CLOSE/NEXT/RESET/DELETE. Model access is limited to

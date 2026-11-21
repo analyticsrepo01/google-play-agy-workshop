@@ -51,6 +51,8 @@ MCP separation, and the bounded optional Gemini commentator. Layouts, the cover
 photo, official tool links, and existing animation timelines are preserved.
 The current source is the standalone repo, not the historical `workshop/demo` folder.
 The cover includes the clickable speaker website: https://sajeetharan.dev/.
+Its blue "Idea -> tools -> agent" title is 27 pt. The closing QR and first
+resource link point to the Name Race repository; the next link opens its build guide.
 
 ### Current fast start
 
@@ -208,7 +210,7 @@ reveal each logical card. There are only **one to three reveal clicks per slide*
 with short Fade/Wipe effects and coordinated fade transitions. Slides never
 advance automatically. The six-chapter ribbon tracks the journey; numbered
 cards and short audience questions support chat participation. The closing QR
-stays static and scannable.
+stays static and scannable and opens the Name Race repository.
 
 On the tools slide (slide 6), AI Studio, Stitch, and Antigravity have clickable
 web addresses in their cards. GitHub Copilot, Cursor, and Claude Code have
@@ -243,7 +245,7 @@ python .\workshop\update_demo_slides.py
 The updater changes text, notes, and the demo-source hyperlink in both saved
 decks. It verifies slide count, preserved object IDs/geometry, photos, and
 timelines before replacing each file. Export both PDFs again with PowerPoint.
-It requires the existing `python-pptx` and Pillow slide-tool dependencies.
+It requires the existing `python-pptx`, Pillow, and `qrcode` slide-tool dependencies.
 
 For native text-fit checks, fresh PDFs, and PNG rehearsal previews on Windows:
 
